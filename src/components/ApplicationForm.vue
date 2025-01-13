@@ -162,6 +162,7 @@ export default {
           class="form-control"
           :class="{ 'is-invalid': errors.power }"
           id="power"
+          min="0"
           placeholder="Об'єм потужностей"
           @change="errors.power = ''"
         />

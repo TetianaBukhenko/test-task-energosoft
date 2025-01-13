@@ -1,8 +1,9 @@
 # test-task-energosoft
 
-This is a test task for EnergoSoftCom. With the ability to add and adding application together with the possibility to read a pdf file.
+This is a test task for EnergoSoftCom. With the ability to add and edit application together with the possibility to read a pdf file.
 
 ## Demo
+https://test-task-energosoft.vercel.app/
 
 ## Technologies
 Vue.js, Pinia, JavaScript, Bootstrap
