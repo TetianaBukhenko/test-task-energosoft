@@ -1,11 +1,11 @@
 <script>
-import { useApplicationsStore } from '@/stores/applications'
 import { areObjectsSimilar } from '@/utils/areObjectsSimilar'
 import { formatDate } from '@/utils/formatDate'
 import { generateFileUrl } from '@/utils/generateFileUrl'
 import { validateFile } from '@/utils/validateFile'
 import { validateForm } from '@/utils/validateForm'
 import NamesModal from './NamesModal.vue'
+import { store } from '@/stores/store'
 
 const initialFormState = {
   applicationNumber: '',
@@ -15,47 +15,59 @@ const initialFormState = {
   firstName: '',
   lastName: '',
   comment: '',
+  clientId: '',
   file: null,
 }
 
 export default {
-  setup() {
-    const store = useApplicationsStore()
-    return { store }
-  },
   components: { NamesModal },
 
   data() {
     return {
       form: initialFormState,
+      initialForm: {},
       errors: {},
       isEditing: false,
-      filePreviewUrl: null,
-      initialForm: {},
       selectedClient: null,
     }
   },
 
-  created() {
+  computed: {
+    applications: () => {
+      return store.state.applications
+    },
+  },
+
+  beforeRouteLeave(to, from, next) {
+    this.clearForm()
+    next()
+  },
+  mounted() {
+    this.clearForm()
     const { id } = this.$route.params
     if (id) {
       this.isEditing = true
-      const selectedEl = this.store.getApplicationById(id)
+      let selectedEl = store.getters.getApplicationById(id)
 
-      if (selectedEl) this.form = selectedEl
+      if (selectedEl) {
+        this.form = selectedEl
+      }
       this.initalForm = selectedEl
     }
   },
 
-  computed: {
-    applications() {
-      console.log(this.store.applications)
-
-      return this.store.applications
-    },
+  unmounted() {
+    this.clearForm()
   },
 
   methods: {
+    clearForm() {
+      this.form = { ...initialFormState }
+      this.errors = {}
+      this.selectedClient = null
+      this.isEditing = false
+    },
+
     handleFileUpload(event) {
       const file = event.target.files[0]
 
@@ -76,7 +88,6 @@ export default {
 
     handleSubmit() {
       const errors = validateForm(this.form)
-      console.log(this.form);
 
       const isFormInvalid = Object.values(errors).some((err) => err.length > 0)
 
@@ -87,16 +98,16 @@ export default {
 
       if (this.isEditing && !areObjectsSimilar(this.initialForm, this.form)) {
         alert('Заява успішно оновлена!')
-        this.store.editApplication(this.form)
-        this.form = initialFormState
+        store.dispatch('editApplication', this.form)
         this.$router.push('../../')
-        this.isEditing = false
+        return
       }
 
+      this.isEditing = false
+
       if (!this.isEditing) {
+        store.dispatch('addNewApplication', this.form)
         alert('Заява успішно відправлена!')
-        this.store.addNewApplication(this.form)
-        this.form = initialFormState
         this.$router.push('../')
       }
     },
@@ -107,11 +118,10 @@ export default {
     },
 
     changeClient(e) {
-      console.log(e);
-
       this.selectedClient = e
       this.form.firstName = e.firstName
       this.form.lastName = e.lastName
+      this.form.clientId = e.clientId
       this.errors.firstName = ''
     },
   },
@@ -198,7 +208,7 @@ export default {
           <input
             type="text"
             class="form-control"
-            :value="selectedClient ? `${form.lastName} ${form.firstName}` : ''"
+            :value="`${form.lastName} ${form.firstName}`"
             :class="{ 'is-invalid': errors.fullName }"
             id="full name"
             placeholder="ПІБ Замовника"
@@ -209,7 +219,7 @@ export default {
 
         <button
           type="button"
-          :class="{'btn-danger': errors.firstName}"
+          :class="{ 'btn-danger': errors.firstName }"
           class="btn btn-primary"
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
@@ -245,10 +255,13 @@ export default {
             :class="{ 'is-invalid': errors.file }"
           />
 
-          <label for="fileInput" class="btn btn-secondary me-2" :class="{'btn-danger': errors.file} ">
+          <label
+            for="fileInput"
+            class="btn btn-secondary me-2"
+            :class="{ 'btn-danger': errors.file }"
+          >
             Оберіть файл
           </label>
-
         </div>
         <div v-if="filePreviewUrl" class="mb-3 col-auto">
           <a class="btn btn-outline-primary me-2" :href="filePreviewUrl" target="_blank"

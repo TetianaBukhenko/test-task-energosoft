@@ -7,23 +7,21 @@ export default {
   },
   data() {
     return {
-      querty: ''
+      querty: '',
     }
   },
   emits: ['selectClient'],
-  mounted() {
-    console.log(this.clients);
-  },
   computed: {
     filteredClients() {
       return this.clients.filter((client) => {
-        const normalizedQuerty = this.querty.toLowerCase();
-        return client.firstName.toLowerCase().includes(normalizedQuerty) || client.lastName.toLowerCase().includes(normalizedQuerty);
+        const normalizedQuerty = this.querty.toLowerCase()
+        return (
+          client.firstName.toLowerCase().includes(normalizedQuerty) ||
+          client.lastName.toLowerCase().includes(normalizedQuerty)
+        )
       })
     },
-  }
-
-
+  },
 }
 </script>
 <template>

@@ -6,7 +6,7 @@ This is a test task for EnergoSoftCom. With the ability to add and edit applicat
 https://test-task-energosoft.vercel.app/
 
 ## Technologies
-Vue.js, Pinia, JavaScript, Bootstrap
+Vue.js, Vuex, JavaScript, Bootstrap
 
 ## Run Locally
 

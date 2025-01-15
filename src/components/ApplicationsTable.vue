@@ -1,37 +1,36 @@
 <script>
-import { useApplicationsStore } from '@/stores/applications'
 import { filterApplications } from '@/utils/filterApplications'
 import { formatDate } from '@/utils/formatDate'
 import { generateFileUrl } from '@/utils/generateFileUrl'
+import SingleClientModel from './SingleClientModel.vue'
+import { store } from '@/stores/store'
 
 export default {
-  setup() {
-    const store = useApplicationsStore()
-    return { store }
-  },
-
+  components: { SingleClientModel },
   data() {
     return {
       start: '',
       end: '',
+      selectedClient: 0,
     }
   },
   computed: {
     applications() {
-      console.log(this.store.applications);
-
-      return this.store.applications
+      return store.state.applications
     },
 
     filteredApplications() {
-
-      console.log(this.applications);
-
       return filterApplications({
         start: this.start,
         end: this.end,
         applications: this.applications,
       })
+    },
+  },
+
+  watch: {
+    selectedClient() {
+      console.log(this.selectedClient)
     },
   },
 
@@ -54,11 +53,15 @@ export default {
     goToEdit(applicationNumber) {
       this.$router.push(`/${applicationNumber}/edit`)
     },
+
+    showApplications(userId) {
+      this.selectedClient = userId
+    },
   },
 }
 </script>
 <template>
-  <section class="px-3" v-if="filteredApplications.length > 0">
+  <section class="container px-3" v-if="filteredApplications.length > 0">
     <div class="py-3">
       <p>Всі заяви в період з:</p>
       <div class="d-flex gap-3">
@@ -108,11 +111,17 @@ export default {
           >
             <td>{{ application.applicationNumber }}</td>
             <td>{{ application.creationDate }}</td>
-            <td>{{ application.lastName + ' ' + application.firstName }}</td>
+            <td class="name-link" @click="showApplications(application.clientId)">
+              {{ application.lastName + ' ' + application.firstName }}
+            </td>
             <td>{{ application.reason }}</td>
             <td>{{ application.power }}</td>
             <td>
-              <a v-if="application.file && application.file.name" :href="getFileLink(application.file)" target="_blank">
+              <a
+                v-if="application.file && application.file.name"
+                :href="getFileLink(application.file)"
+                target="_blank"
+              >
                 {{ application.file.name }}
               </a>
             </td>
@@ -121,7 +130,13 @@ export default {
         </tbody>
       </table>
     </div>
+    <SingleClientModel
+      v-if="selectedClient > 0"
+      :selectedClient="selectedClient"
+      @close-model="selectedClient = 0"
+    />
   </section>
+
   <div class="text-bold fs-1 py-3 text-center" v-else>
     <p>Нажаль заяв поки немає.</p>
     <RouterLink to="/new" class="nav-link" aria-current="New Application">
@@ -168,5 +183,9 @@ export default {
   right: 20px;
   top: 25%;
   background-color: #fff;
+}
+
+.name-link:hover {
+  font-weight: 600;
 }
 </style>
