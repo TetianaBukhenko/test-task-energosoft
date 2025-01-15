@@ -1,8 +1,9 @@
+import { fakeApplications } from '@/api/fakeApplications'
 import { defineStore } from 'pinia'
 
 export const useApplicationsStore = defineStore('applications', {
   state: () => ({
-    applications: JSON.parse(localStorage.getItem('applications') || '[]'),
+    applications: fakeApplications,
   }),
 
   actions: {

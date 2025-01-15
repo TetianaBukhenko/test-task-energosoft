@@ -18,10 +18,15 @@ export default {
   },
   computed: {
     applications() {
+      console.log(this.store.applications);
+
       return this.store.applications
     },
 
     filteredApplications() {
+
+      console.log(this.applications);
+
       return filterApplications({
         start: this.start,
         end: this.end,
@@ -107,7 +112,7 @@ export default {
             <td>{{ application.reason }}</td>
             <td>{{ application.power }}</td>
             <td>
-              <a v-if="application.file.name" :href="getFileLink(application.file)" target="_blank">
+              <a v-if="application.file && application.file.name" :href="getFileLink(application.file)" target="_blank">
                 {{ application.file.name }}
               </a>
             </td>

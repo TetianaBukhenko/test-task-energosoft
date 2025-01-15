@@ -5,6 +5,7 @@ import { formatDate } from '@/utils/formatDate'
 import { generateFileUrl } from '@/utils/generateFileUrl'
 import { validateFile } from '@/utils/validateFile'
 import { validateForm } from '@/utils/validateForm'
+import NamesModal from './NamesModal.vue'
 
 const initialFormState = {
   applicationNumber: '',
@@ -22,6 +23,7 @@ export default {
     const store = useApplicationsStore()
     return { store }
   },
+  components: { NamesModal },
 
   data() {
     return {
@@ -30,6 +32,7 @@ export default {
       isEditing: false,
       filePreviewUrl: null,
       initialForm: {},
+      selectedClient: null,
     }
   },
 
@@ -42,6 +45,14 @@ export default {
       if (selectedEl) this.form = selectedEl
       this.initalForm = selectedEl
     }
+  },
+
+  computed: {
+    applications() {
+      console.log(this.store.applications)
+
+      return this.store.applications
+    },
   },
 
   methods: {
@@ -65,8 +76,9 @@ export default {
 
     handleSubmit() {
       const errors = validateForm(this.form)
+      console.log(this.form);
+
       const isFormInvalid = Object.values(errors).some((err) => err.length > 0)
-      console.log(errors, isFormInvalid)
 
       if (isFormInvalid) {
         this.errors = errors
@@ -93,18 +105,27 @@ export default {
       this.form.creationDate = formatDate.ISOtoUA(e.target.value)
       this.errors.creationDate = ''
     },
+
+    changeClient(e) {
+      console.log(e);
+
+      this.selectedClient = e
+      this.form.firstName = e.firstName
+      this.form.lastName = e.lastName
+      this.errors.firstName = ''
+    },
   },
 }
 </script>
 
 <template>
   <section class="row justify-content-center mw-100 py-5">
-    <form @submit.prevent="handleSubmit" class="col-9 col-lg-5 pt-2">
+    <form @submit.prevent="handleSubmit" class="col-9 col-lg-5 pt-2" novalidate>
       <h1 class="mb-3">{{ isEditing ? 'Редагування заяви' : 'Нова заява' }}</h1>
       <div class="form-floating mb-3">
         <input
           v-model="form.applicationNumber"
-          type="number"
+          type="text"
           class="form-control"
           :class="{ 'is-invalid': errors.applicationNumber }"
           id="applicationNumber"
@@ -158,11 +179,11 @@ export default {
         <input
           v-model="form.power"
           type="number"
-          step="0.1"
+          step="100"
+          min="0"
           class="form-control"
           :class="{ 'is-invalid': errors.power }"
           id="power"
-          min="0"
           placeholder="Об'єм потужностей"
           @change="errors.power = ''"
         />
@@ -172,42 +193,36 @@ export default {
         </div>
       </div>
 
-      <div class="row gap-3">
-        <div class="col">
-          <div class="form-floating mb-3">
-            <input
-              v-model="form.firstName"
-              type="text"
-              class="form-control"
-              :class="{ 'is-invalid': errors.firstName }"
-              id="firstName"
-              placeholder="Ім'я"
-              @change="errors.firstName = ''"
-            />
-            <label for="firstName">Ім'я</label>
-            <div v-if="errors.firstName" class="invalid-feedback">
-              {{ errors.firstName }}
-            </div>
-          </div>
+      <div class="d-flex gap-3 mb-3">
+        <div class="form-floating flex-grow-1 align-items-center">
+          <input
+            type="text"
+            class="form-control"
+            :value="selectedClient ? `${form.lastName} ${form.firstName}` : ''"
+            :class="{ 'is-invalid': errors.fullName }"
+            id="full name"
+            placeholder="ПІБ Замовника"
+            disabled
+          />
+          <label for="full name">ПІБ Замовника</label>
         </div>
-        <div class="col">
-          <div class="form-floating mb-3">
-            <input
-              v-model="form.lastName"
-              type="text"
-              class="form-control"
-              :class="{ 'is-invalid': errors.lastName }"
-              id="lastName"
-              placeholder="Прізвище"
-              @change="errors.lastName = ''"
-            />
-            <label for="lastName">Прізвище</label>
-            <div v-if="errors.lastName" class="invalid-feedback">
-              {{ errors.lastName }}
-            </div>
-          </div>
-        </div>
+
+        <button
+          type="button"
+          :class="{'btn-danger': errors.firstName}"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          Оберіть замовника
+        </button>
       </div>
+
+      <NamesModal
+        :clients="applications"
+        :selectedClient="selectedClient"
+        @select-client="changeClient"
+      />
 
       <div class="form-floating mb-3">
         <textarea
@@ -230,20 +245,17 @@ export default {
             :class="{ 'is-invalid': errors.file }"
           />
 
-          <label for="fileInput" class="btn btn-secondary me-2"> Оберіть файл </label>
+          <label for="fileInput" class="btn btn-secondary me-2" :class="{'btn-danger': errors.file} ">
+            Оберіть файл
+          </label>
 
-          <span class="file-name">
-            {{ (form.file && form.file.name) || 'Файл не обрано' }}
-          </span>
         </div>
         <div v-if="filePreviewUrl" class="mb-3 col-auto">
           <a class="btn btn-outline-primary me-2" :href="filePreviewUrl" target="_blank"
             >Переглянути файл</a
           >
-        </div>
 
-        <div v-if="errors.file" class="invalid-feedback d-block">
-          {{ errors.file }}
+          <p v-if="form.file.name">{{ form.file.name }}</p>
         </div>
       </div>
 

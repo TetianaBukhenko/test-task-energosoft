@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ApplicationForm from '@/components/ApplicationForm.vue'
 import ApplicationsTable from '@/components/ApplicationsTable.vue'
+import ClientsTable from '@/components/ClientsTable.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,6 +10,11 @@ const router = createRouter({
       path: '/',
       name: 'applications',
       component: ApplicationsTable,
+    },
+    {
+      path: '/',
+      name: 'clients',
+      component: ClientsTable,
     },
     {
       path: '/:id/edit',

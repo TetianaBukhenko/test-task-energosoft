@@ -7,21 +7,14 @@ export const validateForm = (form) => {
     form.applicationNumber,
     errorMessages.applicationNumber,
   )
-
   errors.creationDate = validationRules.required(form.creationDate, errorMessages.creationDate)
 
   errors.reason = validationRules.required(form.reason, errorMessages.reason)
 
   errors.power = validationRules.minValue(form.power, 1, errorMessages.power)
 
-  errors.firstName = validationRules.required(form.firstName, errorMessages.firstName)
-
-  errors.lastName = validationRules.required(form.lastName, errorMessages.lastName)
-
-  // errors.file = validationRules.file(
-  //   form.file,
-  //   errorMessages.file
-  // );
+  errors.fullName = validationRules.required(form.firstName, errorMessages.name)
+  errors.file = validationRules.required(form.file, errorMessages.file)
 
   Object.keys(errors).forEach((key) => {
     if (errors[key] === null) {
