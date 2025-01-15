@@ -2,11 +2,11 @@
 import { filterApplications } from '@/utils/filterApplications'
 import { formatDate } from '@/utils/formatDate'
 import { generateFileUrl } from '@/utils/generateFileUrl'
-import SingleClientModel from './SingleClientModel.vue'
+import SingleClientModаl from './SingleClientModal.vue'
 import { store } from '@/stores/store'
 
 export default {
-  components: { SingleClientModel },
+  components: { SingleClientModаl },
   data() {
     return {
       start: '',
@@ -130,10 +130,10 @@ export default {
         </tbody>
       </table>
     </div>
-    <SingleClientModel
+    <SingleClientModаl
       v-if="selectedClient > 0"
       :selectedClient="selectedClient"
-      @close-model="selectedClient = 0"
+      @close-modаl="selectedClient = 0"
     />
   </section>
 

@@ -3,11 +3,11 @@ import { store } from '@/stores/store'
 import { generateFileUrl } from '@/utils/generateFileUrl'
 
 export default {
-  name: 'SingleClientModel',
+  name: 'SingleClientModаl',
   props: {
     selectedClient: Number,
   },
-  emits: ['closeModel'],
+  emits: ['closeModаl'],
   data() {},
   computed: {
     clientOrders() {
@@ -21,8 +21,8 @@ export default {
     },
   },
   methods: {
-    closeModel() {
-      this.$emit('closeModel')
+    closeModаl() {
+      this.$emit('closeModаl')
     },
 
     getFileLink(file) {
@@ -35,18 +35,18 @@ export default {
   <div class="modal d-block">
     <div class="modal-dialog" style="max-width: fit-content">
       <div class="modal-content p-5">
-        <div class="modal-header">
+        <div class="modal-header border-0">
           <h5 class="modal-title" id="exampleModalLabel">Замовленя клієнта: {{ clientName }}</h5>
           <button
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
             aria-label="Close"
-            @click="closeModel"
+            @click="closeModаl"
           ></button>
         </div>
-        <div class="modal-body">
-          <table class="table table-hover">
+        <div class="modal-body  ">
+          <table class="table table-bordered">
             <thead>
               <tr class=" ">
                 <th scope="col" style="width: 10%">Номер заяви</th>
@@ -84,11 +84,11 @@ export default {
             </tbody>
           </table>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer border-0">
           <button
             type="button"
             class="btn btn-secondary"
-            @click="closeModel"
+            @click="closeModаl"
             data-bs-dismiss="modal"
           >
             Закрити
