@@ -93,39 +93,27 @@ export default {
       <table class="table table-hover">
         <thead>
           <tr class=" ">
-            <th scope="col" style="width: 10%">Номер заяви</th>
             <th scope="col" style="width: 15%">Дата створення</th>
             <th scope="col" style="width: 15%">Замовник</th>
-            <th scope="col" style="width: 20%">Причина звернення</th>
+            <th scope="col" style="width: 15%">Адреса замовника</th>
             <th scope="col" style="width: 15%">Об'єм потужностей</th>
-            <th scope="col" style="width: 10%">Файл</th>
-            <th scope="col" style="width: 10%">Коментар</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="application in filteredApplications"
             :key="application.applicationNumber"
-            @dblclick="goToEdit(application.applicationNumber)"
+            @dblclick="showApplications(application.clientId)"
             style="cursor: pointer"
           >
-            <td>{{ application.applicationNumber }}</td>
             <td>{{ application.creationDate }}</td>
-            <td>
+            <td >
               {{ application.lastName + ' ' + application.firstName }}
             </td>
-            <td>{{ application.reason }}</td>
-            <td>{{ application.power }}</td>
+            <td>{{ application.address }}</td>
             <td>
-              <a
-                v-if="application.file && application.file.name"
-                :href="getFileLink(application.file)"
-                target="_blank"
-              >
-                {{ application.file.name }}
-              </a>
+              {{ application.power }}
             </td>
-            <td>{{ application.comment }}</td>
           </tr>
         </tbody>
       </table>
@@ -183,5 +171,9 @@ export default {
   right: 20px;
   top: 25%;
   background-color: #fff;
+}
+
+.name-link:hover {
+  font-weight: 600;
 }
 </style>

@@ -18,6 +18,15 @@ export default {}
           </li>
           <li class="nav-item">
             <RouterLink
+              to="/customers"
+              activeClass="fw-bold"
+              class="nav-link text-dark text-lg"
+              aria-current="All Applications"
+              >Замовники
+            </RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink
               to="/new"
               activeClass="btn-primary text-white"
               class="nav-link btn btn-outline-primary me-2"

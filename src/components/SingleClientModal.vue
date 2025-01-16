@@ -28,6 +28,12 @@ export default {
     getFileLink(file) {
       return generateFileUrl(file)
     },
+
+    goToEdit(applicationNumber) {
+      this.closeModаl()
+      this.$router.push(`/${applicationNumber}/edit`)
+    },
+
   },
 }
 </script>
@@ -45,7 +51,7 @@ export default {
             @click="closeModаl"
           ></button>
         </div>
-        <div class="modal-body  ">
+        <div class="modal-body">
           <table class="table table-bordered">
             <thead>
               <tr class=" ">

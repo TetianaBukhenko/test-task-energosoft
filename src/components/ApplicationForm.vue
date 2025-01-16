@@ -4,7 +4,6 @@ import { formatDate } from '@/utils/formatDate'
 import { generateFileUrl } from '@/utils/generateFileUrl'
 import { validateFile } from '@/utils/validateFile'
 import { validateForm } from '@/utils/validateForm'
-import NamesModal from './NamesModal.vue'
 import { store } from '@/stores/store'
 
 const initialFormState = {
@@ -14,13 +13,13 @@ const initialFormState = {
   power: '',
   firstName: '',
   lastName: '',
+  address: '',
   comment: '',
   clientId: '',
   file: null,
 }
 
 export default {
-  components: { NamesModal },
 
   data() {
     return {
@@ -29,6 +28,9 @@ export default {
       errors: {},
       isEditing: false,
       selectedClient: null,
+      query: '',
+      suggestions: [],
+      selectedCity: null,
     }
   },
 
@@ -204,35 +206,54 @@ export default {
       </div>
 
       <div class="d-flex gap-3 mb-3">
-        <div class="form-floating flex-grow-1 align-items-center">
+        <div class="form-floating flex-grow-1">
           <input
+            v-model="form.firstName"
             type="text"
             class="form-control"
-            :value="`${form.lastName} ${form.firstName}`"
-            :class="{ 'is-invalid': errors.fullName }"
-            id="full name"
-            placeholder="ПІБ Замовника"
-            disabled
+            :class="{ 'is-invalid': errors.firstName }"
+            id="applicationNumber"
+            placeholder="Ім'я"
+            @change="errors.firstName = ''"
           />
-          <label for="full name">ПІБ Замовника</label>
+          <label for="applicationNumber">Ім'я</label>
+          <div v-if="errors.firstName" class="invalid-feedback">
+            {{ errors.firstName }}
+          </div>
         </div>
 
-        <button
-          type="button"
-          :class="{ 'btn-danger': errors.firstName }"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          Оберіть замовника
-        </button>
+        <div class="form-floating flex-grow-1">
+          <input
+            v-model="form.lastName"
+            type="text"
+            class="form-control"
+            :class="{ 'is-invalid': errors.lastName }"
+            id="applicationNumber"
+            placeholder="Прізвище"
+            @change="errors.lastName = ''"
+          />
+          <label for="applicationNumber">Прізвище</label>
+          <div v-if="errors.firstName" class="invalid-feedback">
+            {{ errors.lastName }}
+          </div>
+        </div>
       </div>
 
-      <NamesModal
-        :clients="applications"
-        :selectedClient="selectedClient"
-        @select-client="changeClient"
-      />
+      <div class="form-floating mb-3">
+        <input
+          v-model="form.address"
+          type="text"
+          class="form-control"
+          :class="{ 'is-invalid': errors.adress }"
+          id="applicationNumber"
+          placeholder="Адреса "
+          @change="errors.adress = ''"
+        />
+        <label for="applicationNumber">Адреса</label>
+        <div v-if="errors.adress" class="invalid-feedback">
+          {{ errors.adress }}
+        </div>
+      </div>
 
       <div class="form-floating mb-3">
         <textarea
